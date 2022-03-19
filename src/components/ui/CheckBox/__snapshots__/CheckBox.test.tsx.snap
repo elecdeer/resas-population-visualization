@@ -1,0 +1,17 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`CheckBox Component Snapshot Test 1`] = `
+<DocumentFragment>
+  <label
+    class="checkBox"
+  >
+    <input
+      class="input"
+      type="checkbox"
+    />
+    <span
+      class="label"
+    />
+  </label>
+</DocumentFragment>
+`;
