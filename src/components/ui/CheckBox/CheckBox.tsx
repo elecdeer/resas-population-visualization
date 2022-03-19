@@ -14,7 +14,7 @@ export const CheckBox: React.FC<CheckBoxProps> = ({
   children,
 }) => {
   return (
-    <label className={styles.checkBox}>
+    <label className={styles.checkbox}>
       <input
         className={styles.input}
         type={"checkbox"}
