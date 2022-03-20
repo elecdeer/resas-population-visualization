@@ -1,15 +1,17 @@
 import { stringifyRecordValue } from "./stringifyRecordValue";
 
-test("stringifyRecordValue test", () => {
-  expect(
-    stringifyRecordValue({
+describe("stringifyRecordValueのテスト", () => {
+  test("正しく変換できるか", () => {
+    expect(
+      stringifyRecordValue({
+        str: "str",
+        num: 3,
+        bool: true,
+      })
+    ).toEqual({
       str: "str",
-      num: 3,
-      bool: true,
-    })
-  ).toEqual({
-    str: "str",
-    num: "3",
-    bool: "true",
+      num: "3",
+      bool: "true",
+    });
   });
 });
