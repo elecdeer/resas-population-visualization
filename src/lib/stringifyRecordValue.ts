@@ -8,6 +8,10 @@ export const stringifyRecordValue = <
   param: TRecord
 ): Record<keyof TRecord, string> =>
   Object.entries(param).reduce((acc, [key, value]) => {
+    //undefinedとかが紛れ込んだときはそのまま
+    if (value === undefined || value === null) {
+      return acc;
+    }
     return {
       ...acc,
       [key]: value.toString(),

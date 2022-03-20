@@ -58,7 +58,6 @@ export const fetchToResas = async <
         ? errorParse.data
         : errorParse.data.statusCode
     );
-    const err = createHttpError(errorCode, errorParse.data);
     throw createHttpError(errorCode, errorParse.data);
   } else {
     return resJson;

@@ -17,7 +17,7 @@ describe("populationParamSchemaのスキーマテスト", () => {
     expect(() => {
       populationParamSchema.parse({
         prefCode: 1,
-        cityCode: "01100",
+        cityCode: "-",
       });
     }).not.toThrow();
 
