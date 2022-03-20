@@ -16,6 +16,7 @@ type FormattedParam = Omit<PopulationParam, "addArea"> & {
 
 /**
  * RESAS APIにアクセスし、人口構成データを取得する
+ * @link https://opendata.resas-portal.go.jp/docs/api/v1/population/composition/perYear.html
  * @param param
  */
 export const fetchPopulation = async (
