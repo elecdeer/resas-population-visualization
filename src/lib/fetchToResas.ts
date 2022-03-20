@@ -8,7 +8,7 @@
 import { stringifyRecordValue } from "./stringifyRecordValue";
 
 export const fetchToResas = async <
-  TParameterSchema extends Record<string, number | string> | void
+  TParameterSchema extends Record<string, number | string | boolean>
 >({
   endpoint = process.env.RESAS_API_ENDPOINT,
   apiKey = process.env.RESAS_API_KEY,
