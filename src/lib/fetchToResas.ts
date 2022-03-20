@@ -1,3 +1,7 @@
+import { stringifyRecordValue } from "./stringifyRecordValue";
+import createHttpError from "http-errors";
+import { resasErrorSchema } from "./schema/resasErrorSchema";
+
 /**
  * RESAS APIにfetchしてデータを取得する
  * @param endpoint RESASのエンドポイント 通常はhttps://opendata.resas-portal.go.jp
@@ -5,8 +9,6 @@
  * @param apiPath APIへのパス
  * @param body リクエストに含むBody
  */
-import { stringifyRecordValue } from "./stringifyRecordValue";
-
 export const fetchToResas = async <
   TParameterSchema extends Record<string, number | string | boolean>
 >({
@@ -41,16 +43,24 @@ export const fetchToResas = async <
   });
 
   if (!res.ok) {
-    throw new Error(`Response Error: ${res.status} ${res.statusText}`);
+    throw createHttpError(
+      res.status,
+      `RESAS API Respond Error: ${res.statusText}`
+    );
   }
 
+  //RESASのAPIはエラーの場合でも200を返すことがある
   const resJson = await res.json();
-  //RESASのAPIは常にレスポンスヘッダが200
-  if (resJson.statusCode) {
-    throw new Error(
-      `Response Error: ${resJson.message} ${resJson.description}`
+  const errorParse = resasErrorSchema.safeParse(resJson);
+  if (errorParse.success) {
+    const errorCode = Number(
+      typeof errorParse.data === "string"
+        ? errorParse.data
+        : errorParse.data.statusCode
     );
+    const err = createHttpError(errorCode, errorParse.data);
+    throw createHttpError(errorCode, errorParse.data);
   } else {
-    return res;
+    return resJson;
   }
 };

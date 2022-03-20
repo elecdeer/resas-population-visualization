@@ -1,5 +1,8 @@
 import { fetchToResas } from "./fetchToResas";
-import { PopulationRes, populationResSchema } from "./populationResSchema";
+import {
+  PopulationRes,
+  populationResSchema,
+} from "./schema/populationResSchema";
 
 export type PopulationParam = {
   prefCode: number;
@@ -30,7 +33,7 @@ export const fetchResasPopulation = async (
   };
 
   const res = await fetchToResas<FormattedParam>({
-    apiPath: "a",
+    apiPath: "/api/v1/population/composition/perYear",
     parameter: formattedParam,
   });
 
