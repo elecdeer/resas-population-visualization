@@ -19,7 +19,7 @@ type FormattedParam = Omit<PopulationParam, "addArea"> & {
  * @link https://opendata.resas-portal.go.jp/docs/api/v1/population/composition/perYear.html
  * @param param
  */
-export const fetchPopulation = async (
+export const fetchResasPopulation = async (
   param: PopulationParam
 ): Promise<PopulationRes["result"]> => {
   const formattedParam = {
