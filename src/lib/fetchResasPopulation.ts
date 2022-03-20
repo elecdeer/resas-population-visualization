@@ -3,15 +3,7 @@ import {
   PopulationRes,
   populationResSchema,
 } from "./schema/populationResSchema";
-
-export type PopulationParam = {
-  prefCode: number;
-  cityCode: string | "-";
-  addArea?: {
-    prefCode: number;
-    cityCode?: string;
-  }[];
-};
+import { PopulationParam } from "./schema/populationParamSchema";
 
 type FormattedParam = Omit<PopulationParam, "addArea"> & {
   addArea?: string;
