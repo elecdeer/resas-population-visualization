@@ -1,0 +1,10 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`YearlyLineChart Component Snapshot Test 1`] = `
+<DocumentFragment>
+  <div
+    class="recharts-responsive-container"
+    style="width: 100%; height: 300px;"
+  />
+</DocumentFragment>
+`;
