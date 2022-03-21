@@ -1,0 +1,30 @@
+@use "src/styles/variables";
+
+.layout-display-and-controller {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	margin: 8px;
+	grid-gap: 8px;
+
+  .display {
+		order: 1;
+  }
+
+	.controller {
+		order: 2;
+	}
+
+	// mobile
+	@include variables.media-query(sm) {
+		grid-template-columns: 1fr;
+
+		.display {
+			order: 2;
+		}
+
+		.controller {
+			order: 1;
+		}
+	}
+}
+
