@@ -3,7 +3,7 @@
 exports[`CheckBox Component Snapshot Test 1`] = `
 <DocumentFragment>
   <label
-    class="checkBox"
+    class="checkbox"
   >
     <input
       class="input"

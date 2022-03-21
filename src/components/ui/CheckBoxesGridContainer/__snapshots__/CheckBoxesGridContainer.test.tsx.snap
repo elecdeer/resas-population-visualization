@@ -1,0 +1,9 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`CheckBoxesGridContainer Component Snapshot Test 1`] = `
+<DocumentFragment>
+  <div
+    class="check-boxes-grid-container"
+  />
+</DocumentFragment>
+`;
