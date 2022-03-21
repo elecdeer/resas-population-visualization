@@ -1,0 +1,15 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`PageWithHeader Component Snapshot Test 1`] = `
+<DocumentFragment>
+  <header>
+    <div
+      class="header"
+    >
+      <h1>
+        Title
+      </h1>
+    </div>
+  </header>
+</DocumentFragment>
+`;
