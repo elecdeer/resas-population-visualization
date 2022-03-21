@@ -9,3 +9,21 @@ $base-text-bk-color: $oc-gray-0;
 
 // テーマカラー
 $header-color: $oc-blue-3;
+
+// MediaQuery
+$sm: 576px;
+$md: 768px;
+$lg: 992px;
+$xl: 1200px;
+$breakpoints: (
+	'sm': 'screen and (max-width: #{$sm})',
+	'md': 'screen and (max-width: #{$md})',
+	'lg': 'screen and (max-width: #{$lg})',
+	'xl': 'screen and (max-width: #{$xl})'
+);
+
+@mixin media-query($size) {
+	@media #{map-get($breakpoints, $size)} {
+		@content;
+	}
+}
