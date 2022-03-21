@@ -1,4 +1,8 @@
+@use "src/styles/variables";
+
 .header {
   width: 100%;
-
+  background-color: variables.$header-color;
+  color: variables.$base-text-bk-color;
+  text-align: center;
 }
