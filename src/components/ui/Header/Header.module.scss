@@ -2,7 +2,13 @@
 
 .header {
   width: 100%;
+  height: 48px;
   background-color: variables.$header-color;
   color: variables.$base-text-bk-color;
   text-align: center;
+  margin: 0;
+
+  h1 {
+    margin: 0;
+  }
 }
