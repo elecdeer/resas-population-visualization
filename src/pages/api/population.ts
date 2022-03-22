@@ -19,6 +19,7 @@ const handler = async (
 
   try {
     const result = await fetchResasPopulation(parseResult.data);
+    res.setHeader("Cache-Control", "s-maxage=3600");
     res.status(200).json(result);
   } catch (e) {
     if (isHttpError(e)) {

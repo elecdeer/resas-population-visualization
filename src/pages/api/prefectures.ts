@@ -9,6 +9,7 @@ const handler = async (
 ) => {
   try {
     const result = await fetchResasPrefectures();
+    res.setHeader("Cache-Control", "s-maxage=3600");
     res.status(200).json(result);
   } catch (e) {
     if (isHttpError(e)) {
