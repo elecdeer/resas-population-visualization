@@ -34,15 +34,15 @@ export const fetchToResas = async <
   }
 
   const url = new URL(apiPath, endpoint);
-  console.log(parameter);
+  console.log(`param: ${parameter}`);
   if (parameter) {
     const urlParam = new URLSearchParams(removeInvalidParam(parameter));
     url.search = urlParam.toString();
   }
 
   const cacheData = cache.get(url.toString());
-  if (cacheData) {
-    console.log(`useCache: ${url}`);
+  if (!!cacheData) {
+    console.log(`useCache: key:${url} value:${cacheData}`);
     return cacheData;
   }
 
@@ -66,7 +66,6 @@ export const fetchToResas = async <
   const resJson = await res.json();
   const errorParse = resasErrorSchema.safeParse(resJson);
   if (errorParse.success) {
-    console.log();
     const errorCode = Number(
       typeof errorParse.data === "string"
         ? errorParse.data
@@ -75,7 +74,7 @@ export const fetchToResas = async <
     throw createHttpError(errorCode, errorParse.data);
   } else {
     cache.set(url.toString(), resJson);
-    console.log(`setCache: ${url.toString()}`);
+    console.log(`setCache: key: ${url.toString()} value: ${resJson}`);
     return resJson;
   }
 };
