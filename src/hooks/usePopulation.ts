@@ -6,25 +6,35 @@ type ResultItem = {
   year: number;
 } & Record<number, number>;
 
+// type OldFmt = {
+//   prefCode: number;
+//   data: {
+//     year: number;
+//     value: number;
+//   }[];
+// }[];
+//
+// type MidFmt = {
+//   prefCode: number;
+//   year: number;
+//   value: number;
+// }[];
+//
+// type NewFmt = ({
+//   year: number;
+// } & Record<number, number>)[];
+
 const fetcher: Fetcher<
-  (PrefecturesRes["result"][number] & {
-    label: string | undefined;
-    data: PopulationRes["result"]["data"][number]["data"] | undefined;
-  })[],
+  ResultItem[],
   {
     url: string;
     prefectures: PrefecturesRes["result"];
     label: string;
     showEstimation?: boolean;
   }
-> = ({ url, prefectures, showEstimation = false, label }) => {
-  console.log(`fetch populations: ${prefectures}`);
-
-  return Promise.all(
+> = async ({ url, prefectures, showEstimation = false, label }) => {
+  const eachPrefPopulation = await Promise.all(
     prefectures.map(async (pref) => {
-      console.log(`fetch pref ${pref.prefCode}`);
-      console.log(url);
-
       const params = new URLSearchParams();
       params.set("prefCode", String(pref.prefCode));
       params.set("cityCode", "-");
@@ -45,6 +55,37 @@ const fetcher: Fetcher<
       };
     })
   );
+
+  const allFlatData = eachPrefPopulation.reduce<
+    {
+      prefCode: number;
+      year: number;
+      value: number;
+    }[]
+  >((acc, cur) => {
+    if (!cur.data) return acc;
+    const flatData = cur.data?.map((item) => ({
+      prefCode: cur.prefCode,
+      year: item.year,
+      value: item.value,
+    }));
+    return [...acc, ...flatData];
+  }, []);
+
+  const collectedData = allFlatData.reduce<
+    Record<number, { year: number } & Record<number, number>>
+  >((acc, cur) => {
+    return {
+      ...acc,
+      [cur.year]: {
+        ...acc[cur.year],
+        year: cur.year,
+        [cur.prefCode]: cur.value,
+      },
+    };
+  }, {});
+
+  return Object.values(collectedData);
 };
 
 export const usePopulation = (

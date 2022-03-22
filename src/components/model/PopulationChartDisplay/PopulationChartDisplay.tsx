@@ -32,26 +32,29 @@ export const PopulationChartDisplay: React.VFC<PopulationChartDisplayProps> = ({
     `displayPrefectures: ${displayPrefectures.map((pref) => pref.prefCode)}`
   );
 
-  const { data: populations } = usePopulation(displayPrefectures);
+  //今回は事前に全ての県のデータを取得する
+  const { data: populations } = usePopulation(prefectures);
 
   const renderLines = () =>
-    populations?.map((pref) => (
-      <Line
-        dataKey={"value"}
-        data={pref.data}
-        name={pref.prefName}
-        key={pref.prefCode}
-      />
+    displayPrefectures?.map((pref) => (
+      <Line dataKey={pref.prefCode} name={pref.prefName} key={pref.prefCode} />
     ));
 
   return (
     <ResponsiveContainer height={400} width={"100%"}>
-      <LineChart>
+      <LineChart data={populations} margin={{ left: 30, right: 10 }}>
         <CartesianGrid strokeDasharray="3 3" />
         <XAxis dataKey="year" allowDuplicatedCategory={false} />
         <YAxis />
         <Tooltip />
-        <Legend layout="vertical" verticalAlign="top" align="right" />
+        <Legend
+          layout="vertical"
+          verticalAlign="top"
+          align="right"
+          wrapperStyle={{
+            paddingLeft: 20,
+          }}
+        />
         {renderLines()}
       </LineChart>
     </ResponsiveContainer>
