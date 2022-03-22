@@ -1,6 +1,10 @@
-import { stringifyRecordValue } from "./stringifyRecordValue";
 import createHttpError from "http-errors";
 import { resasErrorSchema } from "./schema/resasErrorSchema";
+import NodeCache from "node-cache";
+
+const cache = new NodeCache({
+  stdTTL: 3600,
+});
 
 /**
  * RESAS APIにfetchしてデータを取得する
@@ -10,7 +14,7 @@ import { resasErrorSchema } from "./schema/resasErrorSchema";
  * @param body リクエストに含むBody
  */
 export const fetchToResas = async <
-  TParameterSchema extends Record<string, number | string | boolean>
+  TParameterSchema extends Record<string, string>
 >({
   endpoint = process.env.RESAS_API_ENDPOINT,
   apiKey = process.env.RESAS_API_KEY,
@@ -30,10 +34,19 @@ export const fetchToResas = async <
   }
 
   const url = new URL(apiPath, endpoint);
+  console.log(parameter);
   if (parameter) {
-    const urlParam = new URLSearchParams(stringifyRecordValue(parameter));
+    const urlParam = new URLSearchParams(removeInvalidParam(parameter));
     url.search = urlParam.toString();
   }
+
+  const cacheData = cache.get(url.toString());
+  if (cacheData) {
+    console.log(`useCache: ${url}`);
+    return cacheData;
+  }
+
+  console.log(`fetchToResas: ${url}`);
 
   const res = await fetch(url.toString(), {
     method: "GET",
@@ -53,6 +66,7 @@ export const fetchToResas = async <
   const resJson = await res.json();
   const errorParse = resasErrorSchema.safeParse(resJson);
   if (errorParse.success) {
+    console.log();
     const errorCode = Number(
       typeof errorParse.data === "string"
         ? errorParse.data
@@ -60,6 +74,22 @@ export const fetchToResas = async <
     );
     throw createHttpError(errorCode, errorParse.data);
   } else {
+    cache.set(url.toString(), resJson);
+    console.log(`setCache: ${url.toString()}`);
     return resJson;
   }
+};
+
+const removeInvalidParam = (
+  parameter: Record<string, string>
+): Record<string, string> => {
+  return Object.entries(parameter)
+    .filter(([_, value]) => !!value)
+    .reduce(
+      (acc, [key, value]) => ({
+        ...acc,
+        [key]: value,
+      }),
+      {}
+    );
 };

@@ -9,13 +9,7 @@ import {
   YAxis,
 } from "recharts";
 
-export type YearlyChartData = {
-  year: number;
-} & Record<string, number>;
-
-export type YearlyLineChartProps = React.ComponentProps<typeof LineChart> & {
-  data: YearlyChartData[];
-};
+export type YearlyLineChartProps = React.ComponentProps<typeof LineChart>;
 
 export const YearlyLineChart: React.FC<YearlyLineChartProps> = ({
   children,

@@ -3,30 +3,24 @@ import {
   PopulationRes,
   populationResSchema,
 } from "./schema/populationResSchema";
-import { PopulationParam } from "./schema/populationParamSchema";
 
-type FormattedParam = Omit<PopulationParam, "addArea"> & {
+export type ResasPopulationQuery = {
+  prefCode: string;
+  cityCode: string;
   addArea?: string;
 };
 
 /**
  * RESAS APIにアクセスし、人口構成データを取得する
  * @link https://opendata.resas-portal.go.jp/docs/api/v1/population/composition/perYear.html
- * @param param
+ * @param query
  */
 export const fetchResasPopulation = async (
-  param: PopulationParam
+  query: ResasPopulationQuery
 ): Promise<PopulationRes["result"]> => {
-  const formattedParam = {
-    ...param,
-    addArea: param.addArea
-      ?.map((area) => `${area.prefCode}_${area.cityCode}`)
-      .join(),
-  };
-
-  const res = await fetchToResas<FormattedParam>({
+  const res = await fetchToResas<ResasPopulationQuery>({
     apiPath: "/api/v1/population/composition/perYear",
-    parameter: formattedParam,
+    parameter: query,
   });
 
   const typedRes = populationResSchema.parse(res);

@@ -8,7 +8,7 @@ export default {
   component: LayoutDisplayAndController,
 };
 
-export const Default = (args: LayoutDisplayAndControllerProps) => (
+export const Default = (args?: LayoutDisplayAndControllerProps) => (
   <LayoutDisplayAndController
     {...args}
     controller={<div style={{ background: "#ff9966" }}>Controller</div>}
