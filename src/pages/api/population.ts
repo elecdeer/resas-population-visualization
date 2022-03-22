@@ -1,24 +1,30 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import createHttpError, { HttpError, isHttpError } from "http-errors";
 import { PopulationRes } from "../../lib/schema/populationResSchema";
-import { fetchResasPopulation } from "../../lib/fetchResasPopulation";
-import { populationParamSchema } from "../../lib/schema/populationParamSchema";
+import {
+  fetchResasPopulation,
+  ResasPopulationQuery,
+} from "../../lib/fetchResasPopulation";
+
+const parseQuery = (query: NextApiRequest["query"], key: string) => {
+  const value = query[key];
+  if (!value) return "";
+
+  if (Array.isArray(value)) return value.join(",");
+  return value;
+};
 
 const handler = async (
   req: NextApiRequest,
   res: NextApiResponse<PopulationRes["result"] | HttpError>
 ) => {
-  //bodyを使うのでMethodにはPOSTを使う
-  const param = JSON.parse(req.body);
-
-  const parseResult = populationParamSchema.safeParse(param);
-  if (!parseResult.success) {
-    res.status(400).send(new createHttpError["400"]());
-    return;
-  }
-
+  const query: ResasPopulationQuery = {
+    prefCode: parseQuery(req.query, "prefCode"),
+    cityCode: parseQuery(req.query, "cityCode"),
+    addArea: parseQuery(req.query, "addArea"),
+  };
   try {
-    const result = await fetchResasPopulation(parseResult.data);
+    const result = await fetchResasPopulation(query);
     res.setHeader("Cache-Control", "s-maxage=3600");
     res.status(200).json(result);
   } catch (e) {

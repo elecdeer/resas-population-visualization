@@ -1,4 +1,3 @@
-import { stringifyRecordValue } from "./stringifyRecordValue";
 import createHttpError from "http-errors";
 import { resasErrorSchema } from "./schema/resasErrorSchema";
 
@@ -10,7 +9,7 @@ import { resasErrorSchema } from "./schema/resasErrorSchema";
  * @param body リクエストに含むBody
  */
 export const fetchToResas = async <
-  TParameterSchema extends Record<string, number | string | boolean>
+  TParameterSchema extends Record<string, string>
 >({
   endpoint = process.env.RESAS_API_ENDPOINT,
   apiKey = process.env.RESAS_API_KEY,
@@ -30,10 +29,12 @@ export const fetchToResas = async <
   }
 
   const url = new URL(apiPath, endpoint);
+  console.log(parameter);
   if (parameter) {
-    const urlParam = new URLSearchParams(stringifyRecordValue(parameter));
+    const urlParam = new URLSearchParams(removeInvalidParam(parameter));
     url.search = urlParam.toString();
   }
+  console.log(`fetchToResas: ${url}`);
 
   const res = await fetch(url.toString(), {
     method: "GET",
@@ -62,4 +63,18 @@ export const fetchToResas = async <
   } else {
     return resJson;
   }
+};
+
+const removeInvalidParam = (
+  parameter: Record<string, string>
+): Record<string, string> => {
+  return Object.entries(parameter)
+    .filter(([_, value]) => !!value)
+    .reduce(
+      (acc, [key, value]) => ({
+        ...acc,
+        [key]: value,
+      }),
+      {}
+    );
 };

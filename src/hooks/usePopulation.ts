@@ -1,6 +1,5 @@
 import { PopulationRes } from "../lib/schema/populationResSchema";
 import useSWR, { Fetcher } from "swr";
-import { PopulationParam } from "../lib/schema/populationParamSchema";
 import { PrefecturesRes } from "../lib/schema/prefecturesResSchema";
 
 type ResultItem = {
@@ -18,18 +17,19 @@ const fetcher: Fetcher<
     label: string;
     showEstimation?: boolean;
   }
-> = async ({ url, prefectures, showEstimation = false, label }) => {
-  return await Promise.all(
-    prefectures.map(async (pref) => {
-      const query: PopulationParam = {
-        prefCode: pref.prefCode,
-        cityCode: "-",
-      };
+> = ({ url, prefectures, showEstimation = false, label }) => {
+  console.log(`fetch populations: ${prefectures}`);
 
-      const res = await fetch(url, {
-        method: "POST",
-        body: JSON.stringify(query),
-      });
+  return Promise.all(
+    prefectures.map(async (pref) => {
+      console.log(`fetch pref ${pref.prefCode}`);
+      console.log(url);
+
+      const params = new URLSearchParams();
+      params.set("prefCode", String(pref.prefCode));
+      params.set("cityCode", "-");
+
+      const res = await fetch(`${url}?${params}`);
       const result = (await res.json()) as PopulationRes["result"];
 
       const groupData = result.data.find((item) => item.label === label);
