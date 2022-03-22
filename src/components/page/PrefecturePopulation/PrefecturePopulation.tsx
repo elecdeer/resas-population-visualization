@@ -7,11 +7,14 @@ import { PrefectureController } from "../../model/PrefectureController/Prefectur
 import { PopulationChartDisplay } from "../../model/PopulationChartDisplay/PopulationChartDisplay";
 
 export const PrefecturePopulation: React.VFC = () => {
-  const { data: prefectureData } = usePrefectures();
+  const { data: prefectureData, error } = usePrefectures();
   const [checkState, setCheckState] = usePrefecturesState(prefectureData);
 
   if (!prefectureData) {
     return <p>Loading...</p>;
+  }
+  if (error) {
+    return <p>Network Error</p>;
   }
 
   return (
