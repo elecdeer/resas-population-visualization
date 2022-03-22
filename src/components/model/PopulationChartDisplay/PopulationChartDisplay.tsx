@@ -12,6 +12,7 @@ import {
   YAxis,
 } from "recharts";
 import { usePopulation } from "../../../hooks/usePopulation";
+import { useRandomColors } from "../../../hooks/useRandomColors";
 export type PopulationChartDisplayProps = {
   prefectures: PrefecturesRes["result"];
   checkState: PrefectureCheckStates;
@@ -27,6 +28,9 @@ export const PopulationChartDisplay: React.VFC<PopulationChartDisplayProps> = ({
   //今回は事前に全ての県のデータを取得する
   const { data: populations } = usePopulation(prefectures);
 
+  const randomColors = useRandomColors(prefectures.length);
+  console.log(randomColors);
+
   const renderLines = () =>
     prefectures?.map((pref) => (
       <Line
@@ -34,6 +38,7 @@ export const PopulationChartDisplay: React.VFC<PopulationChartDisplayProps> = ({
         name={pref.prefName}
         key={pref.prefCode}
         hide={!checkState[pref.prefCode]}
+        stroke={randomColors[pref.prefCode]}
         isAnimationActive={false}
       />
     ));
