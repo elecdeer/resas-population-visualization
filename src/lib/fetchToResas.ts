@@ -1,4 +1,3 @@
-import { stringifyRecordValue } from "./stringifyRecordValue";
 import createHttpError from "http-errors";
 import { resasErrorSchema } from "./schema/resasErrorSchema";
 import NodeCache from "node-cache";
@@ -15,7 +14,7 @@ const cache = new NodeCache({
  * @param body リクエストに含むBody
  */
 export const fetchToResas = async <
-  TParameterSchema extends Record<string, number | string | boolean>
+  TParameterSchema extends Record<string, string>
 >({
   endpoint = process.env.RESAS_API_ENDPOINT,
   apiKey = process.env.RESAS_API_KEY,
