@@ -1,30 +1,30 @@
 import React from "react";
-import {
-  CartesianGrid,
-  Legend,
-  LineChart,
-  ResponsiveContainer,
-  Tooltip,
-  XAxis,
-  YAxis,
-} from "recharts";
+import { AnimatedAxis, AnimatedGrid, Tooltip, XYChart } from "@visx/xychart";
 
-export type YearlyLineChartProps = React.ComponentProps<typeof LineChart>;
+export type YearlyLineChartProps = {};
 
 export const YearlyLineChart: React.FC<YearlyLineChartProps> = ({
   children,
-  ...props
 }) => {
+  //Tooltip
   return (
-    <ResponsiveContainer height={300} width={"100%"}>
-      <LineChart {...props}>
-        <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey="year" />
-        <YAxis />
-        <Tooltip />
-        <Legend layout="vertical" verticalAlign="top" align="right" />
+    <div>
+      <XYChart
+        height={400}
+        xScale={{ type: "band" }}
+        yScale={{ type: "linear" }}
+        margin={{ left: 100, top: 50, bottom: 50, right: 50 }}
+      >
+        <AnimatedGrid />
+        <AnimatedAxis orientation={"bottom"} label={"年度"} />
+        <AnimatedAxis
+          orientation={"left"}
+          label={"人口数"}
+          labelOffset={70}
+          tickLabelProps={() => ({ dx: -10 })}
+        />
         {children}
-      </LineChart>
-    </ResponsiveContainer>
+      </XYChart>
+    </div>
   );
 };
