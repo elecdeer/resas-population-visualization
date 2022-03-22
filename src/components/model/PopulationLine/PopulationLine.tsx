@@ -1,6 +1,6 @@
 import React, { useMemo } from "react";
+import { Line } from "recharts";
 import { usePopulation } from "../../../hooks/usePopulation";
-import { AnimatedLineSeries } from "@visx/xychart";
 
 export type PopulationLineProps = {
   prefCode: number;
@@ -13,31 +13,34 @@ export const PopulationLine: React.VFC<PopulationLineProps> = ({
   dataLabel = "総人口",
   name,
 }) => {
-  const param = useMemo(
-    () => ({
-      prefCode: prefCode,
-      cityCode: "-",
-    }),
-    [prefCode]
-  );
-
-  const { data, error } = usePopulation(param);
+  console.log("render populationLine");
+  const { data, error } = usePopulation({
+    prefCode: prefCode,
+    cityCode: "-",
+  });
+  if (error) {
+    console.error(error);
+  }
 
   const populationData = useMemo(
     () => data?.data.find((item) => item.label === dataLabel)?.data,
     [data?.data, dataLabel]
   );
+  console.log(populationData);
 
   if (!populationData) {
     return <></>;
   }
 
-  return (
-    <AnimatedLineSeries
-      dataKey={name}
-      data={populationData}
-      xAccessor={(item) => item.year}
-      yAccessor={(item) => item.value}
-    />
-  );
+  return <Line dataKey={"value"} data={populationData} name={name} />;
 };
+//
+// @ts-ignore
+PopulationLine.defaultProps = Line.defaultProps;
+PopulationLine.displayName = Line.displayName;
+// @ts-ignore
+PopulationLine.getComposedData = Line.getComposedData;
+// @ts-ignore
+PopulationLine.repeat = Line.repeat;
+// @ts-ignore
+PopulationLine.renderDotItem = Line.renderDotItem;
