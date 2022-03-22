@@ -1,3 +1,4 @@
+import { stringifyRecordValue } from "./stringifyRecordValue";
 import createHttpError from "http-errors";
 import { resasErrorSchema } from "./schema/resasErrorSchema";
 import NodeCache from "node-cache";
@@ -14,7 +15,7 @@ const cache = new NodeCache({
  * @param body リクエストに含むBody
  */
 export const fetchToResas = async <
-  TParameterSchema extends Record<string, string>
+  TParameterSchema extends Record<string, number | string | boolean>
 >({
   endpoint = process.env.RESAS_API_ENDPOINT,
   apiKey = process.env.RESAS_API_KEY,
@@ -34,15 +35,15 @@ export const fetchToResas = async <
   }
 
   const url = new URL(apiPath, endpoint);
-  console.log(parameter);
+  console.log(`param: ${parameter}`);
   if (parameter) {
     const urlParam = new URLSearchParams(removeInvalidParam(parameter));
     url.search = urlParam.toString();
   }
 
   const cacheData = cache.get(url.toString());
-  if (cacheData) {
-    console.log(`useCache: ${url}`);
+  if (!!cacheData) {
+    console.log(`useCache: key:${url} value:${cacheData}`);
     return cacheData;
   }
 
@@ -66,7 +67,6 @@ export const fetchToResas = async <
   const resJson = await res.json();
   const errorParse = resasErrorSchema.safeParse(resJson);
   if (errorParse.success) {
-    console.log();
     const errorCode = Number(
       typeof errorParse.data === "string"
         ? errorParse.data
@@ -75,7 +75,7 @@ export const fetchToResas = async <
     throw createHttpError(errorCode, errorParse.data);
   } else {
     cache.set(url.toString(), resJson);
-    console.log(`setCache: ${url.toString()}`);
+    console.log(`setCache: key: ${url.toString()} value: ${resJson}`);
     return resJson;
   }
 };
