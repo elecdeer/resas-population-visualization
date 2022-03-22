@@ -20,6 +20,8 @@ export type PopulationChartDisplayProps = {
 };
 // import styles from "./PopulationChartDisplay.module.scss";
 
+const numberFormat = new Intl.NumberFormat("en").format;
+
 export const PopulationChartDisplay: React.VFC<PopulationChartDisplayProps> = ({
   prefectures,
   checkState,
@@ -52,14 +54,30 @@ export const PopulationChartDisplay: React.VFC<PopulationChartDisplayProps> = ({
         }
       `}</style>
       <ResponsiveContainer width={"100%"} height={300}>
-        <LineChart data={populations}>
+        <LineChart data={populations} >
           <CartesianGrid strokeDasharray="3 3" />
           <XAxis
             dataKey="year"
             allowDuplicatedCategory={false}
             tick={{ fontSize: 10 }}
+            label={{
+              value: "年度",
+              position: "insideBottomRight",
+              fontSize: 10,
+            }}
           />
-          <YAxis tick={{ fontSize: 10 }} />
+          <YAxis
+            tick={{ fontSize: 10 }}
+            label={{
+              value: "人口数",
+              position: "insideTopLeft",
+              fontSize: 10,
+              angle: -90,
+              dy: 40,
+              dx: 0,
+            }}
+            tickFormatter={(value) => numberFormat(value)}
+          />
           <Tooltip />
           <Legend
             width={120}
