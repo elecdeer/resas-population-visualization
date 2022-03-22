@@ -9,7 +9,7 @@ const handler = async (
   res: NextApiResponse<PopulationRes["result"] | HttpError>
 ) => {
   //bodyを使うのでMethodにはPOSTを使う
-  const param = req.body;
+  const param = JSON.parse(req.body);
 
   const parseResult = populationParamSchema.safeParse(param);
   if (!parseResult.success) {
