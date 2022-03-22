@@ -3,11 +3,11 @@ import { useRouter } from "next/router";
 import { useCallback } from "react";
 import { useCheckBoxesState } from "./useCheckBoxesState";
 
-type PrefectureItem = PrefecturesRes["result"][number] & {
-  checked: boolean;
-};
-
-type CheckStateRecord = Record<number, boolean>;
+export type PrefectureCheckStates = Record<number, boolean>;
+export type SetPrefectureCheckStates = (
+  prefCode: number,
+  checked: boolean
+) => void;
 
 const parseRouterQuery = (
   queryValue: string | string[] | undefined
@@ -19,18 +19,21 @@ const parseRouterQuery = (
 };
 
 export const usePrefecturesState = (
-  prefecturesData: PrefecturesRes["result"]
-) => {
+  prefecturesData: PrefecturesRes["result"] | undefined
+): [PrefectureCheckStates, SetPrefectureCheckStates] => {
   const router = useRouter();
   const query = router.query["prefectures"];
 
   const [state, setMapState] = useCheckBoxesState(() => {
+    if (!prefecturesData) {
+      return {};
+    }
     return prefecturesData.reduce(
       (acc, cur) => ({
         ...acc,
         [cur.prefCode]: parseRouterQuery(query).includes(cur.prefCode),
       }),
-      {} as CheckStateRecord
+      {} as PrefectureCheckStates
     );
   });
 
