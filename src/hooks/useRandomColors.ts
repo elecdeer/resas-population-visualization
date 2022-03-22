@@ -7,9 +7,9 @@ export const useRandomColors = (length: number): string[] => {
 };
 
 const getRandomColor = (): string => {
-  const r = Math.ceil(Math.random() * 256);
-  const g = Math.ceil(Math.random() * 256);
-  const b = Math.ceil(Math.random() * 256);
+  const r = Math.ceil(Math.random() * 255);
+  const g = Math.ceil(Math.random() * 255);
+  const b = Math.ceil(Math.random() * 255);
   //0x33 * 3, 0xCC * 3
   //暗すぎる or 明るすぎるならもう一回
   if (r + g + b < 153 || 612 < r + g + b) {
