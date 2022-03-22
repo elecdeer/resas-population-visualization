@@ -25,9 +25,10 @@ const handler = async (
   };
   try {
     const result = await fetchResasPopulation(query);
-    res.setHeader("Cache-Control", "s-maxage=3600");
+    res.setHeader("Cache-Control", "maxage=43200");
     res.status(200).json(result);
   } catch (e) {
+    console.error("error at /population", e);
     if (isHttpError(e)) {
       res.status(e.statusCode).send(e);
       return;

@@ -1,5 +1,10 @@
 import createHttpError from "http-errors";
 import { resasErrorSchema } from "./schema/resasErrorSchema";
+import NodeCache from "node-cache";
+
+const cache = new NodeCache({
+  stdTTL: 3600,
+});
 
 /**
  * RESAS APIにfetchしてデータを取得する
@@ -34,6 +39,13 @@ export const fetchToResas = async <
     const urlParam = new URLSearchParams(removeInvalidParam(parameter));
     url.search = urlParam.toString();
   }
+
+  const cacheData = cache.get(url.toString());
+  if (cacheData) {
+    console.log(`useCache: ${url}`);
+    return cacheData;
+  }
+
   console.log(`fetchToResas: ${url}`);
 
   const res = await fetch(url.toString(), {
@@ -54,6 +66,7 @@ export const fetchToResas = async <
   const resJson = await res.json();
   const errorParse = resasErrorSchema.safeParse(resJson);
   if (errorParse.success) {
+    console.log();
     const errorCode = Number(
       typeof errorParse.data === "string"
         ? errorParse.data
@@ -61,6 +74,8 @@ export const fetchToResas = async <
     );
     throw createHttpError(errorCode, errorParse.data);
   } else {
+    cache.set(url.toString(), resJson);
+    console.log(`setCache: ${url.toString()}`);
     return resJson;
   }
 };
