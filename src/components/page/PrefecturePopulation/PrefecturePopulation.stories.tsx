@@ -1,8 +1,8 @@
-import { PrefecturePopulation, PrefecturePopulationProps} from "./PrefecturePopulation";
+import { PrefecturePopulation } from "./PrefecturePopulation";
 
 export default {
-	title: "ui/PrefecturePopulation",
-	component: PrefecturePopulation
-}
+  title: "ui/PrefecturePopulation",
+  component: PrefecturePopulation,
+};
 
-export const Default = (args: PrefecturePopulationProps) => <PrefecturePopulation {...args}/>
+export const Default = () => <PrefecturePopulation />;

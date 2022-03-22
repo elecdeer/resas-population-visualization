@@ -7,10 +7,22 @@ exports[`LayoutDisplayAndController Component Snapshot Test 1`] = `
   >
     <div
       class="controller"
-    />
+    >
+      <div
+        style="background: rgb(255, 153, 102);"
+      >
+        Controller
+      </div>
+    </div>
     <div
       class="display"
-    />
+    >
+      <div
+        style="background: rgb(51, 204, 255);"
+      >
+        Display
+      </div>
+    </div>
   </div>
 </DocumentFragment>
 `;
