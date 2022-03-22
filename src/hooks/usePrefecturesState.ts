@@ -1,6 +1,6 @@
 import { PrefecturesRes } from "../lib/schema/prefecturesResSchema";
 import { useRouter } from "next/router";
-import { useCallback } from "react";
+import { useCallback, useEffect } from "react";
 import { useCheckBoxesState } from "./useCheckBoxesState";
 
 export type PrefectureCheckStates = Record<number, boolean>;
@@ -13,29 +13,36 @@ const parseRouterQuery = (
   queryValue: string | string[] | undefined
 ): number[] => {
   if (!queryValue) return [];
-  return Array.from(queryValue)
-    .filter((item) => Number.isInteger(item))
-    .map((item) => Number(item));
+  if (Array.isArray(queryValue)) return queryValue.map((item) => Number(item));
+  return queryValue
+    .split(",")
+    .map((item) => Number(item))
+    .filter((item) => Number.isInteger(item));
 };
 
 export const usePrefecturesState = (
   prefecturesData: PrefecturesRes["result"] | undefined
 ): [PrefectureCheckStates, SetPrefectureCheckStates] => {
   const router = useRouter();
-  const query = router.query["prefectures"];
 
   const [state, setMapState] = useCheckBoxesState(() => {
-    if (!prefecturesData) {
-      return {};
-    }
-    return prefecturesData.reduce(
-      (acc, cur) => ({
-        ...acc,
-        [cur.prefCode]: parseRouterQuery(query).includes(cur.prefCode),
-      }),
-      {} as PrefectureCheckStates
+    return (
+      prefecturesData?.map((item) => ({
+        [item.prefCode]: false,
+      })) ?? {}
     );
   });
+
+  //初回レンダー時はqueryはundefinedなので遅延
+  useEffect(() => {
+    const query = router.query["prefectures"];
+    const queryPref = parseRouterQuery(query);
+    console.log("fromQuery", queryPref);
+    queryPref.forEach((prefCode) => {
+      setMapState(prefCode, true);
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [router.isReady, setMapState]);
 
   const set = useCallback(
     (prefCode: number, checked: boolean) => {
@@ -47,20 +54,30 @@ export const usePrefecturesState = (
 
       if (checked) {
         //queryに付け足す
-        router.query = {
+        const nextQuery = {
           ...router.query,
           prefectures: [...removedState, prefCode]
             .sort((a, b) => a - b)
-            .map((code) => String(code)),
+            .map((code) => String(code))
+            .join(","),
         };
+
+        void router.push({ query: nextQuery }, undefined, {
+          scroll: false,
+        });
       } else {
         //queryから取り除く
-        router.query = {
+        const nextQuery = {
           ...router.query,
           prefectures: [...removedState]
             .sort((a, b) => a - b)
-            .map((code) => String(code)),
+            .map((code) => String(code))
+            .join(","),
         };
+
+        void router.push({ query: nextQuery }, undefined, {
+          scroll: false,
+        });
       }
     },
     [router, setMapState]

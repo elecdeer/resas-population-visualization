@@ -29,7 +29,6 @@ export const PopulationChartDisplay: React.VFC<PopulationChartDisplayProps> = ({
   const { data: populations } = usePopulation(prefectures);
 
   const randomColors = useRandomColors(prefectures.length);
-  console.log(randomColors);
 
   const renderLines = () =>
     prefectures?.map((pref) => (
